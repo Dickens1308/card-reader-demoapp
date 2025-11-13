@@ -148,6 +148,15 @@ void MainWindow::startScanning()
                 QMetaObject::invokeMethod(this, "showErrorScreen", Qt::QueuedConnection, 
                                         Q_ARG(QString, errorMsg));
             }
+        } else {
+            // Timeout or scan failed - restart scanning
+            qDebug() << "Scan failed or timed out, restarting scan...";
+            
+            // Small delay before restarting to let the reader settle
+            QThread::msleep(500);
+            
+            // Restart scanning on the main thread
+            QMetaObject::invokeMethod(this, "startScanning", Qt::QueuedConnection);
         } });
 }
 

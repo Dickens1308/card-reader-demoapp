@@ -324,8 +324,6 @@ CardReader::CardData CardReader::scanCard(unsigned int timeoutSeconds)
         usleep(100000); // 100ms delay
     }
 
-    // result.errorMessage = "Timeout - no card detected";
-    // emit scanComplete(false, result.errorMessage);
     _coupler.Reset();
     return result;
 }

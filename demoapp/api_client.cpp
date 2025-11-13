@@ -119,8 +119,6 @@ ApiClient::Response ApiClient::sendCardTap(const QString &cardNumber, const QStr
     // Build request payload
     QString jsonPayload = buildRequestPayload(cardNumber, cardData, amount);
     QByteArray jsonBytes = jsonPayload.toUtf8();
-    qDebug().noquote() << "Request Body:\n"
-                       << jsonPayload;
 
     qDebug() << "Sending to API:" << config.apiUrl;
 
