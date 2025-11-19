@@ -5,8 +5,8 @@ SRC_DIR="/home/dart/aep/sdk-4.18/examples/demoapp/demoapp"
 BUILD_DIR="$SRC_DIR/build"
 TARGET="demoapp"
 REMOTE_USER="root"
-REMOTE_HOST="192.168.8.125"
-REMOTE_PATH="/tmp/"
+REMOTE_HOST="172.16.36.183"
+REMOTE_PATH="/home/dart/"
 
 # Create build directory
 mkdir -p "$BUILD_DIR"

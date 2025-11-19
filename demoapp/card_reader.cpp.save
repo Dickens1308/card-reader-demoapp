@@ -126,9 +126,8 @@ bool CardReader::authenticateAndRead(Coupler *coupler, const uint8_t *keyA, int 
 
     // Authenticate sector
     emit readProgress("Authenticating sector...");
-    qDebug() << "Authenticating sector" << sector << "with key:" << bytesToHex(keyA, 6);
-    qDebug() << "Will read blocks" << startBlock << "to" << endBlock;
-    result = mifareCoupler->Authenticate(sector, 0x0A, 0xFF, &ucType, serialNumber, &ucStatus);
+    int authBlock = sector * 4;
+    result = mifareCoupler->Authenticate(authBlock, 0x0A, 0xFF, &ucType, serialNumber, &ucStatus);
     if (result != RCSC_Ok || ucStatus != 0)
     {
         qDebug() << "Authentication failed: result=" << result << ", status=" << ucStatus;
@@ -233,11 +232,11 @@ CardReader::CardData CardReader::scanCard(unsigned int timeoutSeconds)
         {
             qDebug() << "Found MIFARE Classic 1K card";
             result.cardType = "MIFARE Classic 1K";
-        
+            emit cardDetected(result.cardType);
+
             if (processMifareClassic(&_coupler, result.rawData))
             {
                 result.success = true;
-                emit cardDetected(result.cardType);
                 emit scanComplete(true, "Card read successfully");
             }
             else
