@@ -125,7 +125,7 @@ bool CardReader::authenticateAndRead(Coupler *coupler, const uint8_t *keyA, int 
 
     // Authenticate sector
     emit readProgress("Authenticating sector...");
-    result = mifareCoupler->Authenticate(sector, 0x0A, 0xFF, &ucType, serialNumber, &ucStatus);
+    result = mifareCoupler->Authenticate(sector, 0x60, 0xFF, &ucType, serialNumber, &ucStatus);
     if (result != RCSC_Ok || ucStatus != 0)
     {
         qDebug() << "Authentication failed: result=" << result << ", status=" << ucStatus;
