@@ -114,7 +114,7 @@ bool CardReader::authenticateAndRead(Coupler *coupler, const uint8_t *keyA, int 
     int16 result;
 
     // Load key into reader
-    emit readProgress("Loading authentication key...");
+    qDebug() << "Loading authentication key...";
     result = mifareCoupler->LoadReaderKeyIndex(0xFF, (uint8 *)keyA, &ucStatus);
     if (result != RCSC_Ok || ucStatus != 0)
     {
@@ -122,12 +122,14 @@ bool CardReader::authenticateAndRead(Coupler *coupler, const uint8_t *keyA, int 
         emit authenticationFailed();
         return false;
     }
-    emit readProgress("Loaded Authentication Key...");
+    else
+    {
+        qDebug() << "LoadReaderKeyIndex result:" << result << ", status:" << ucStatus;
+        qDebug() << "Loaded Authentication Key...";
+    }
 
     // Authenticate sector
-    emit readProgress("Authenticating sector...");
-    qDebug() << "Authenticating sector" << sector << "with key:" << bytesToHex(keyA, 6);
-    qDebug() << "Will read blocks" << startBlock << "to" << endBlock;
+    qDebug() << "Authenticating sector: " << sector << "with key:" << bytesToHex(keyA, 6);
     result = mifareCoupler->Authenticate(sector, 0x0A, 0xFF, &ucType, serialNumber, &ucStatus);
     if (result != RCSC_Ok || ucStatus != 0)
     {
@@ -139,10 +141,11 @@ bool CardReader::authenticateAndRead(Coupler *coupler, const uint8_t *keyA, int 
     qDebug() << "Authentication successful!";
 
     // Read blocks
+    qDebug() << "Preparing to reading block" << startBlock << "to" << endBlock;
     for (int block = startBlock; block <= endBlock; block++)
     {
         uchar data[16];
-        emit readProgress(QString("Reading block %1...").arg(block));
+        qDebug() << QString("Reading block %1...").arg(block);
 
         result = mifareCoupler->ReadBlock(block, data, &ucStatus);
         if (result != RCSC_Ok || ucStatus != 0)
@@ -227,13 +230,14 @@ CardReader::CardData CardReader::scanCard(unsigned int timeoutSeconds)
         if (atrLen >= 4)
         {
             result.cardUid = bytesToHex(atr, qMin((int)atrLen, 7));
+            qDebug() << "Card UID:" << result.cardUid;
         }
 
         if (com == 5 && atr[1] == 0x08)
         {
             qDebug() << "Found MIFARE Classic 1K card";
             result.cardType = "MIFARE Classic 1K";
-        
+
             if (processMifareClassic(&_coupler, result.rawData))
             {
                 result.success = true;
