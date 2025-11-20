@@ -38,6 +38,10 @@ HEADERS    += mainwindow.h \
 
 FORMS      += mainwindow.ui
 
+AEP-CDB4V2 {
+    message("Building AEP-CDB4V2")
+}
+
 # Library paths
 LIBS_PATH = /opt/aep-cdb4v2
 
